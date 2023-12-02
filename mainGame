@@ -1,0 +1,223 @@
+import tkinter
+import random
+import tkinter.messagebox as msg
+from tkinter import *
+from tkinter import font
+from WordList import word_list
+
+#canvas
+root= Tk()
+root.geometry('600x400')
+
+#Text Information
+style1= font = ('Arial',45,'bold')
+style2 = font = ('Arial', 15)
+style3= font = ('Arial',30,'bold')
+style4= font = ('DejaVu Sans Mono',20,'bold')
+
+#Variables
+word_label= None
+scoreWin = 0
+scoreLose = 0
+
+# Main Menu Screen
+def main():
+    frame = Frame(root, width = 600, height = 400, bg = 'white')
+    frame.place (x=0,y=0)
+    
+        #label
+    label1=Label(frame, text = 'Main Menu', background = 'white', font = (style1))
+    label1.place (x= 110, y = 100, anchor ='sw')
+    
+        #buttons
+    button1 = Button(frame, text = ' How to play ', command = howToPlay)
+    button1.place (x = 200, y = 150, width= 200, height=50)
+    
+    button2 = Button(frame, text = ' Play ', command = gameScreen)
+    button2.place (x = 200, y = 270, width = 200, height = 50)
+    
+    button3 = Button(frame, text = ' Score ', command = score)
+    button3.place (x = 200, y = 210, width = 200, height = 50)
+
+
+# Direction Screen || Text, Back Button (Returns to main screen)
+def howToPlay():
+    frame2 = Frame(root, width = 600, height = 400, bg = 'white')
+    frame2.place (x=0,y=0)
+    
+    #labels
+    label1=Label(frame2, text = 'Game Instructions', background = 'white', font = (style3))
+    label1.place (x= 70, y = 70, anchor ='sw')
+
+    label2=Label(frame2, text = '''The objection of hangman is to guess the secret
+word before the stick figure is hung.''', background = 'white', font = (style2))
+    label2.place (x= 30, y = 140, anchor ='sw')
+
+    label3=Label(frame2, text = '''A word will be randomly chosen from a list. The
+player will be shown a number of dashes
+corresponding to the number of letters in the word.
+The player's goal is to guess the correct letters in
+the word by typing a single letter into the answer
+box. For each wrong guess, a body part of the
+stick man will be drawn on the screen until
+no more body parts can be drawn.''', background = 'white', font = (style2))
+    label3.place (x= 30, y = 360, anchor ='sw')
+
+    #buttons
+    button1 = Button(frame2, text = 'X', command = main)
+    button1.place (x = 550, y = 10, width = 35, height = 35)
+
+def score():
+    frame4 = Frame(root, width = 600, height = 400, bg = 'white')
+    frame4.place (x=0,y=0)
+    
+    #labels
+    label1=Label(frame4, text = 'Score', background = 'white', font = (style1))
+    label1.place (x= 200, y = 80, anchor ='sw')
+    
+    label2=Label(frame4, text = 'Wins =', background = 'white', font = (style4))
+    label2.place (x= 200, y = 200, anchor ='sw')
+    label4=Label(frame4, text = scoreWin, background = 'white', font = (style4))
+    label4.place (x= 315, y = 200, anchor ='sw')
+    
+    label3=Label(frame4, text = 'Losts =', background = 'white', font = (style4))
+    label3.place (x= 200, y = 240, anchor ='sw')
+    label4=Label(frame4, text = scoreLose, background = 'white', font = (style4))
+    label4.place (x= 330, y = 240, anchor ='sw')
+    
+    #buttons
+    button1 = Button(frame4, text = 'X', command = main)
+    button1.place (x = 550, y = 10, width = 35, height = 35)
+
+# Game Screen || Hang Man, Letter/Word Input, Trys left, Incorrt Answers, Back Button, Restart Button
+def gameScreen():
+    frame3 = Frame(root, width = 600, height = 400, bg = 'light gray')
+    frame3.place (x=0,y=0)
+    canvas= Canvas(frame3, width = 600, height = 400)
+    
+    global word_label
+    
+    #labels
+    label1=Label(frame3, text = 'HANGMAN', font = (style4))
+    label1.place (x= 235, y = 50, anchor ='sw')
+    
+    label2=Label(frame3, text = 'Incorrect Answers:', font = (style2))
+    label2.place (x= 350, y = 200, anchor ='sw')
+    
+    #buttons
+    button1 = Button(frame3, text = 'X', command = main)
+    button1.place (x = 550, y = 10, width = 35, height = 35)
+    
+    button2 = Button(frame3, text = '↻', command = gameScreen)
+    button2.place (x = 550, y = 50, width = 35, height = 35)
+    
+    #hangman post
+    canvas.create_rectangle(300, 90, 325, 400, fill = "brown")
+    canvas.create_rectangle(100, 90, 300, 110, fill = "brown")
+    canvas.create_rectangle(100, 90, 120, 150, fill = "brown")
+    canvas.create_rectangle(170, 380, 400, 400, fill = "brown")
+    canvas.pack()
+    
+    
+    #hangman
+    maxguess = 6
+    secretWord = random.choice(word_list)
+    wordLength = (len(secretWord))
+    guessedLetters = []
+    dashes = []
+
+    for i in range (wordLength):
+        dashes.append('_')
+        
+    word_label = Label(frame3, text = dashes, font = (style4))
+    word_label.place (x= 20, y = 380, anchor ='sw')
+    
+    wrong = Label(frame3, text = guessedLetters, font = (style4))
+    wrong.place (x= 370, y = 250, anchor ='sw')
+    
+# creates the man
+    def update_hangman(maxguess):
+        global c1,c2,c3,c4,c5,c6,c7
+        if maxguess == 5:
+            c1= canvas.create_oval(80, 206, 145, 145, fill = "black")
+            c2= canvas.create_oval(85, 201, 140, 150, fill = 'light gray')
+        elif maxguess == 4:
+            c3= canvas.create_rectangle(105, 206, 120, 270, fill = "black")
+        elif maxguess == 3:
+            c4= canvas.create_line(110, 220, 70, 250, width = 15)
+        elif maxguess == 2:
+            c5= canvas.create_line(115, 220, 155, 250, width = 15)
+        elif maxguess == 1:
+            c6= canvas.create_line(110, 268, 70, 330, width = 15)
+    
+        # checks the guess that was entered
+        
+# checks the guess that was entered       
+    def check_guess():
+        global scoreLose
+        nonlocal maxguess
+        if maxguess != 0:
+            guess = txt.get().lower()
+            
+            if guess not in secretWord:
+                maxguess -= 1
+                guessedLetters.append(guess)
+                wrong.configure (text = guessedLetters)
+                update_hangman(maxguess)
+        
+            for i in range(wordLength):
+                if secretWord[i] == guess:
+                    dashes[i] = guess
+                    word_label.configure (text = dashes)
+                    
+            if "".join(dashes) == secretWord:
+                end_game('Win')
+                return
+        
+            if maxguess == 0:
+                c7= canvas.create_line(115, 268, 155, 330, width = 15)
+                scoreLose +=1
+                end_game('Lose')
+
+# checks to see what the results of the game is    
+    def end_game(result):
+        global scoreWin
+        if result == 'Win':
+            scoreWin += 1
+            msg.showinfo('Game Over', "Congrats, you win!")
+            txt.configure(state='disabled')
+            buttontxt.configure(state='disabled')
+        else:
+            msg.showwarning("Game Over", 'You Lose, the word was " ' + secretWord + '".')
+            txt.configure(state='disabled')
+            buttontxt.configure(state='disabled')
+        
+        # check to see if the letter was in the alphabet, and if it is equal to 1
+
+# Checks to see if guess was entered is a letter, only 1, or hasn't been guessed already
+    def process (event=""):
+        if txt.get() == secretWord:
+            word_label.configure (text = txt.get())
+            end_game('Win')
+        elif txt.get().isalpha() and len(txt.get()) == 1 and txt.get() not in guessedLetters and txt.get() not in dashes:
+            check_guess()
+        elif txt.get().isalpha() == False: 
+            msg.showerror('Error', 'Please use ONLY the Alphabet.')
+        elif len(txt.get()) == 0 or len(txt.get()) > 1:
+            msg.showerror('Error', 'Please use ONLY ONE letter.')
+        elif txt.get() in guessedLetters or txt.get() in dashes:
+            msg.showerror('Error', 'You have already used this letter. Please use a differnt letter.')
+        txt.delete(0, END)
+        
+#create word entry
+    txt = Entry()
+    txt.place(x=410, y=300, width = 170, height = 30)
+    
+ #Submit Button
+    buttontxt = Button(frame3, text = 'Guess', command = process)
+    buttontxt.place (x = 450, y = 350, width = 100, height = 40)
+    root.bind('<Return>',process)
+
+main()
+
+root.mainloop()
